@@ -15,7 +15,8 @@ html
           label(for='clubname') Club Name
           input(type='text', name='clubname', class='form-control', 
             id='clubname', placeholder='Enter the name of the club',
-            required data-required-msg='The club name is required')    
+            required data-required-msg='The club name is required',
+            readonly value=(clubs || [])[0])
         .form-group
           label(for='cityname') City 
           input(type='text', name='cityname', class='form-control', 

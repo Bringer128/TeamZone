@@ -1,0 +1,62 @@
+{
+  "name": "test-dependency-injector",
+  "version": "2.0.3",
+  "author": {
+    "name": "Tim Walker",
+    "email": "tim.r.walker@gmail.com"
+  },
+  "license": "MIT",
+  "description": "Dependency injector for Express controllers using di.js",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trwalker/express-dependency-injector.git"
+  },
+  "keywords": [
+    "di",
+    "express",
+    "express-di",
+    "injector",
+    "dependency injector",
+    "dependency injection",
+    "express dependency injector",
+    "express dependency injection"
+  ],
+  "dependencies": {
+    "di": "^2.0.0-pre-9"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.21.1",
+    "sinon": "^1.10.3"
+  },
+  "scripts": {
+    "test": "mocha",
+    "install-local": "npm install -g mocha & npm install"
+  },
+  "gitHead": "b3902344c6ca8a18f15a96f28ed67eeae5d2019a",
+  "bugs": {
+    "url": "https://github.com/trwalker/express-dependency-injector/issues"
+  },
+  "homepage": "https://github.com/trwalker/express-dependency-injector",
+  "_id": "express-dependency-injector@2.0.3",
+  "_shasum": "1b4528cd5dad28f3f6fd636c503ba2be56666a34",
+  "_from": "express-dependency-injector@^2.0.3",
+  "_npmVersion": "1.4.23",
+  "_npmUser": {
+    "name": "twalk25",
+    "email": "tim.r.walker@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "twalk25",
+      "email": "tim.r.walker@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "1b4528cd5dad28f3f6fd636c503ba2be56666a34",
+    "tarball": "http://registry.npmjs.org/express-dependency-injector/-/express-dependency-injector-2.0.3.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/express-dependency-injector/-/express-dependency-injector-2.0.3.tgz"
+}

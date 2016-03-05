@@ -1,31 +1,11 @@
-/// <reference path='../typings/tsd.d.ts' />
-/// <reference path='../typings/express/express.ext.d.ts' />
-/// <reference path='../typings/node/node.d.ts' />
-/*jslint nomen: true */
 'use strict';
 var Flash = require("./flash");
-/*
-*  Handles web requests to login a user
-*  @class
-**/
 var UserLogin = (function () {
-    /**
-    * Accepts the service component that will handle the registration of a new user in the database
-    * @constructor
-    * @param {IUserManagementService} _ums - service to provide the ability to register the new user.
-    **/
     function UserLogin(_ums) {
         var _this = this;
         this._ums = _ums;
-        /**
-        * We attempt to login the user via the service.  No special validation required, the service will match the user and fail the
-        * login process if this fails.
-        * @param {express.Request} req - incoming request object furnished by Express
-        * @param {express.Response} req - incoming response object furnished by Express
-        **/
         this.post = function (req, res) {
             var flash = new Flash();
-            // pull the form variables off the request body
             var username = req.body.username;
             var password = req.body.password;
             _this._ums.LoginUser(username, password, function (err, reslogin) {
@@ -51,12 +31,6 @@ var UserLogin = (function () {
                 }
             });
         };
-        /**
-        * Renders the login page when requested by a user
-        * @constructor
-        * @param {express.Request} req - incoming request object furnished by Express
-        * @param {express.Response} req - incoming response object furnished by Express
-        **/
         this.get = function (req, res) {
             res.render('login');
         };

@@ -1,31 +1,9 @@
-/// <reference path='../typings/tsd.d.ts' />
-/// <reference path='../typings/express/express.d.ts' />
-/// <reference path='../typings/express-session/express-session.d.ts' />
-/// <reference path='../typings/express-validator/express-validator.d.ts' />
-/// <reference path='../typings/express/express.ext.d.ts' />
-/// <reference path='../typings/node/node.d.ts' />
-/*jslint nomen: true */
 'use strict';
 var Flash = require("./flash");
-/*
-*  Handles web requests to register a new user
-*  @class
-**/
 var UserRegister = (function () {
-    /**
-    * Accepts the service component that will handle the registration of a new user in the database
-    * @constructor
-    * @param {IUserManagementService} _ums - service to provide the ability to register the new user.
-    **/
     function UserRegister(_ums) {
         var _this = this;
         this._ums = _ums;
-        /**
-        * Handles the incoming request by validating the incoming data and then asking the user management service to register the user
-        * @constructor
-        * @param {express.Request} req - incoming request object furnished by Express
-        * @param {express.Response} req - incoming response object furnished by Express
-        **/
         this.post = function (req, res) {
             req.checkBody('password', 'Password is required').notEmpty();
             req.checkBody('password', 'Password length needs to be at least 8 characters').len(8);
@@ -33,7 +11,6 @@ var UserRegister = (function () {
             req.checkBody('email', 'Email does not appear to be valid').isEmail();
             var errors = req.validationErrors();
             var flash = new Flash();
-            //work around for access to ums in nested callback code
             var ums = _this._ums;
             if (errors && errors.length > 0) {
                 var errorCount = errors.length;
@@ -62,12 +39,6 @@ var UserRegister = (function () {
                 });
             }
         };
-        /**
-        * Renders the register page when requested by a user
-        * @constructor
-        * @param {express.Request} req - incoming request object furnished by Express
-        * @param {express.Response} req - incoming response object furnished by Express
-        **/
         this.get = function (req, res) {
             res.render('register');
         };

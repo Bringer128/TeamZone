@@ -6,4 +6,5 @@
 **/
 export interface IClubManagementService {
     CreateClub(clubname: string, fieldname: string, suburbname: string, cityname: string, adminemail: string, callback: any);
+    GetClubs(adminemail: string, callback: any);
 }

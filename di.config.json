@@ -19,7 +19,7 @@
     { "item": "./routes/userRegister", "dependencies": [ "./lib/ts/UserManagementService" ], "scope": "webrequest" },
     { "item": "./routes/userConfirm", "dependencies": [ "./lib/ts/UserManagementService" ], "scope": "webrequest" },
     { "item": "./routes/createClub", "dependencies": [ "./lib/ts/ClubManagementService" ], "scope": "webrequest" },
-    { "item": "./routes/createSquad", "dependencies": [ "./lib/ts/SquadManagementService" ], "scope": "webrequest" },
+    { "item": "./routes/createSquad", "dependencies": [ "./lib/ts/SquadManagementService", "./lib/ts/ClubManagementService" ], "scope": "webrequest" },
     { "item": "./routes/addPlayer", "dependencies": [ "./lib/ts/PlayerManagementService" ], "scope": "webrequest" },
     { "item": "./routes/addSquadPlayer", "dependencies": [ "./lib/ts/SquadManagementService" ], "scope": "webrequest" }
   ]

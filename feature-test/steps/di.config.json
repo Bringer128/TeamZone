@@ -1,0 +1,8 @@
+{
+  "items": [
+    { "item": "../../lib/UserManagementService", "dependencies": [ "../../lib/UserRepository", "../../lib/CryptService", "../../lib/TokenService", "../../lib/MailGunAPIEmailVerifyService"], "scope": "webrequest" },
+    { "item": "../../lib/CryptService", "dependencies": [], "scope": "transient" },
+    { "item": "../../lib/MailGunAPIEmailVerifyService", "dependencies": [ "info@aboutagile.com", "https://teamzone-teamzone.c9.io/verifyReg", "key-39bb09ee565759dda760855ad27eada1" ], "scope": "webrequest" },
+    { "item": "../../lib/UserRepository", "dependencies": [], "scope": "transient" }
+  ]
+}

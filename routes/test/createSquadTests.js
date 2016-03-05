@@ -5,29 +5,41 @@
 /*jshint expr: true*/
 "use strict";
 
+var assert = require('assert');
 var createsquad = require('../createSquad');
 var sinon = require('sinon');
 var squadmanagementservice = require('../../lib/ts/SquadManagementService');
+var clubmanagementservice = require('../../lib/ts/ClubManagementService');
 var sinonChai = require("sinon-chai");
 var chai = require("chai");
 chai.should();
 chai.use(sinonChai);
 require('mocha-sinon');
 var expressValidator = require('express-validator')();
+var createError = require('errno').create;
 
 describe("Testing of expressjs route for create a squad", function () {
     //1. Module Setup
     var cs,
         sandbox,
-        stubCreateClub,
-        cms,
+        stubCreateSquad,
+        sms,
+        stubGetClubs,
+        clubms,
+        incomingGetRequest,
         incomingExpressRequest,
         outgoingExpressResponse,
         outgoingExpressResponseSpy;
 
     beforeEach(function () {
 
-        cms = new squadmanagementservice(null);
+        sms = new squadmanagementservice(null);
+        clubms = new clubmanagementservice(null);
+        incomingGetRequest = {
+            session: {
+                user: { email: 'robdunn@aboutagile.com' }
+            }
+        };
         incomingExpressRequest = {
             body: { clubname: 'Western Knights', cityname: 'Perth', squadname: '1st team', season: '2015', adminemail: 'mel.taylor-gainsford@wk.com.au', agelimit: 'unrestricted' },
             session: { authenticated: true, user: { } }
@@ -38,16 +50,19 @@ describe("Testing of expressjs route for create a squad", function () {
 
         //sandbox to cleanup global spies
         sandbox = sinon.sandbox.create();
-        stubCreateClub = sandbox.stub(cms, 'CreateSquad');
-        stubCreateClub.yields(null);
+        stubCreateSquad = sandbox.stub(sms, 'CreateSquad');
+        stubCreateSquad.yields(null);
         outgoingExpressResponse = {
             redirect: function (view) { /* just a stub to be overridden by sinon */ console.log('This code for should not be executed in a unit test %s', view); },
             render: function (view) { /* just a stub to be overridden by sinon */ console.log('This code for should not be executed in a unit test %s', view); }
         };
         outgoingExpressResponseSpy = sandbox.spy(outgoingExpressResponse, 'render');
 
+        stubGetClubs = sandbox.stub(clubms, 'GetClubs');
+        stubGetClubs.yields(null, ['Club1']);
+
         //this will be setup to be injected soon enough
-        cs = new createsquad(cms);
+        cs = new createsquad(sms, clubms);
     });
 
     function assertSquadCreatedAndViewUpdated(redirectView, spy, alertType, messages) {
@@ -69,6 +84,16 @@ describe("Testing of expressjs route for create a squad", function () {
     }
 
     //2. Module Exercise
+    it("Returns the user's managed clubs on a get", function (done) {
+        cs.get(incomingGetRequest, outgoingExpressResponse);
+
+        outgoingExpressResponseSpy.should.have.been.calledWith('createSquad', {
+            clubs: ['Club1']
+        });
+
+        done();
+    });
+
 
     it("Create a valid squad", function (done) {
         //1. setup
@@ -89,7 +114,7 @@ describe("Testing of expressjs route for create a squad", function () {
         //setup - changing the default behaviour
         var expectedErrorMessage = 'Create Squad Service Failure',
             expectedError = new Error(expectedErrorMessage);
-        stubCreateClub.yields(expectedError);
+        stubCreateSquad.yields(expectedError);
 
         //exercise
         cs.post(incomingExpressRequest, outgoingExpressResponse);
@@ -140,6 +165,24 @@ describe("Testing of expressjs route for create a squad", function () {
         incomingExpressRequest.body.adminemail = '---';
         //2. exercise
         enactRequestBodyValidationTest(incomingExpressRequest, [{ msg: 'Administrator/Custodian Email does not appear to be valid' }], done);
+    });
+
+    it("Shows the notClubAdmin view if not a club admin", function (done) {
+        // 1. setup
+        var error = {
+            notFound: true,
+            message: 'Could not find Club for admin: robdunn@aboutagile.com'
+        };
+        stubGetClubs.yields(error, []);
+
+        // 2. exercise
+        cs.get(incomingGetRequest, outgoingExpressResponse);
+
+        // 3. verify
+        assert(outgoingExpressResponseSpy.calledWith('notClubAdmin'));
+
+        // 4. teardown
+        done();
     });
 
     //3. Module Verify

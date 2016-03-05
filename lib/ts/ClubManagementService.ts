@@ -55,6 +55,29 @@ export module Service {
 				});
 			}));
 		}
+		
+		GetClubs = (adminemail: string, callback: any) => {
+			var clubs = [];
+			var err = null;
+			this._clubs.createReadStream()
+				.on('data', data => {
+					if(adminemail === data.value.admin) {
+						clubs.push(data.key);
+					}
+				})
+				.on('error', error => {
+					err = error;
+				})
+				.on('end', () => {
+					if(!err && clubs.length == 0) {
+						err = {
+							notFound: true,
+							message: 'No clubs found with admin: ' + adminemail
+						};
+					}
+					callback(err, clubs);
+				});
+		}
 
 		/**
 		* Supplies an array parameter values and their names and links to the validations required for these parameters

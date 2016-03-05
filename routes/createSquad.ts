@@ -10,7 +10,8 @@
 
 import express = require("express");
 import Flash = require("./flash");
-import Service = require("../lib/ts/ISquadManagementService");
+import SquadManagement = require("../lib/ts/ISquadManagementService");
+import ClubManagement = require("../lib/ts/IClubManagementService");
 import webRequest = require("./IWebRequest");
 
 /*
@@ -24,7 +25,7 @@ export class CreateSquad implements webRequest.IWebRequest {
     * @constructor
     * @param {ITeamManagementService} _tms - service to provide the ability to create a new club.
     **/  
-    constructor(private _cms: Service.ISquadManagementService) { 
+    constructor(private _sms: SquadManagement.ISquadManagementService, private _cms: ClubManagement.IClubManagementService) { 
     }
     
     /**
@@ -47,7 +48,7 @@ export class CreateSquad implements webRequest.IWebRequest {
         var flash: Flash = new Flash();
         
         //work around for access to ums in nested callback code
-        var cms = this._cms;
+        var sms = this._sms;
         
         if (errors && errors.length > 0) {
             var errorCount: number = errors.length;
@@ -65,7 +66,7 @@ export class CreateSquad implements webRequest.IWebRequest {
             var squadname = req.body.squadname;
             var agelimit = req.body.agelimit;
             var adminemail = req.body.adminemail;
-            cms.CreateSquad(clubname, cityname, squadname, season, agelimit, adminemail, function(err) {
+            sms.CreateSquad(clubname, cityname, squadname, season, agelimit, adminemail, function(err) {
                 if (err) {
                     flash.type = 'alert-danger';
                     flash.messages = [{ msg: err.message }];
@@ -86,7 +87,21 @@ export class CreateSquad implements webRequest.IWebRequest {
     * @param {express.Response} req - incoming response object furnished by Express
     **/  
     get = (req: express.Request, res: express.Response) => {
-      res.render('createSquad');
+        
+        this._cms.GetClubs(req.session.user.email, function(err, clubs) {
+            if(err && err.notFound) {
+                res.render('notClubAdmin');
+                return;
+            }
+            
+            if(err) {
+                var flash: Flash = new Flash();
+                res.render('createSquad', { flash: flash });
+                return;
+            }
+            
+            res.render('createSquad', { clubs: clubs || []});  
+        });
     }
 }
 
